@@ -1,30 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-
+﻿
 namespace AdventOfCode2022
 {
-
-
-    
-    internal class Day8
+    internal class Day8 : Problem
     {
         int[,] trees;
         int outsideTotal;
-        List<string> input;
+        
         private int Length => input[0].Length;
         private int Height => input.Count();
-        public void Run()
-        {
-            ParseInput(@"../../../Input/Day8/test.txt");
-            Part1();
-            Part2();
-        }
+        
 
-        private  void Part1()
+        protected override void Part1()
         {
             outsideTotal = (Length * 2) + (Height * 2 - 4);
             int current, treeCount = 0;
@@ -86,7 +72,7 @@ namespace AdventOfCode2022
             Console.ReadLine();
         }
 
-        private void Part2()
+        protected override void Part2()
         {
             int[,] viewingScore = new int[Length, Height];
             int current, left, right, up, down;
@@ -163,9 +149,9 @@ namespace AdventOfCode2022
             }
         }
 
-        private void ParseInput(string fileName)
+        protected override void ParseInput(string fileName)
         {
-            input = File.ReadAllLines(fileName).ToList();
+            base.ParseInput(fileName);
             trees = new int[Length, Height];
             for (int i = 0; i < input.Count(); i++)
             {

@@ -17,7 +17,7 @@ namespace AdventOfCode2022
    }
 
     
-    internal class Day7 : IProblem
+    internal class Day7
     {
         private Element root;
         private List<int> sums;
