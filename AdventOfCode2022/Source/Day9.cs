@@ -9,12 +9,12 @@ namespace AdventOfCode2022
 {
     internal class Day9 : Problem
     {
-        char[,] grid;
         List<string> movesDir;
         List<int> moveCount;
         (int, int) head;
         (int, int) tail;
         HashSet<(int, int)> moves;
+        List<(int, int)> tails;
 
         protected override void Part1()
         {
@@ -22,11 +22,8 @@ namespace AdventOfCode2022
             tail = (0, 0);
             HashSet<(int, int)> moves = new HashSet<(int, int)>();
             var headPrev = head;
-            //PrintGrid();
             for (int count = 0; count < movesDir.Count(); count++)
             {
-                Console.WriteLine($"head: {head}, tail: {tail}");
-                //Console.WriteLine($"Dir: {movesDir[count]}, Count: {moveCount[count]}");
                 if (movesDir[count] == "L")
                 {
                     for (int i = 0; i < moveCount[count]; i++)
@@ -40,8 +37,6 @@ namespace AdventOfCode2022
                             tail = headPrev;
                             moves.Add((tail.Item1, tail.Item2));
                         }
-
-                        //PrintGrid();
                     }
                 }
                 if (movesDir[count] == "R")
@@ -57,8 +52,6 @@ namespace AdventOfCode2022
                             tail = headPrev;
                             moves.Add((tail.Item1, tail.Item2));
                         }
-
-                        //PrintGrid();
                     }
                 }
                 if (movesDir[count] == "D")
@@ -74,8 +67,6 @@ namespace AdventOfCode2022
                             tail = headPrev;
                             moves.Add((tail.Item1, tail.Item2));
                         }
-
-                        //PrintGrid();
                     }
                 }
                 if (movesDir[count] == "U")
@@ -91,183 +82,119 @@ namespace AdventOfCode2022
                             tail = headPrev;
                             moves.Add((tail.Item1, tail.Item2));
                         }
-
-                        //PrintGrid();
                     }
                 }
             }
-            //PrintTable();
+            PrintKnot();
 
-            Console.WriteLine($"Total Moves: {moves.Count() + 1}");
+            Console.WriteLine($"Total Moves (one knot): {moves.Count() + 1}");
         }
 
         protected override void Part2()
         {
-            head = (0, 0);
-            var tailone = (0, 0);
-            var tailtwo = (0, 0);
-            var tailthree = (0, 0);
-            var tailfour = (0, 0);
-            var tailfive = (0, 0);
-            var tailsix = (0, 0);
-            var tailseven = (0, 0);
-            var taileight = (0, 0);
-            var tailnine = (0, 0);
-            List<(int, int)> tails = new List<(int, int)>() { tailone, tailtwo, tailthree, tailfour, tailfive, tailsix, tailseven, taileight, tailnine };
+            head = (25,25);
+            tails = new List<(int, int)>() { (25, 25), (25, 25), (25, 25), (25, 25), (25, 25), (25, 25), (25, 25), (25, 25), (25, 25) };
 
             moves = new HashSet<(int, int)>();
-            var headPrev = head;
-            var prevTail = head;
-            //PrintGrid();
+
             for (int count = 0; count < movesDir.Count(); count++)
             {
-                Console.WriteLine($"head: {head}, tail: {tail}");
-
-                for (int i = 0; i < moveCount[count]; i++)
+                if (movesDir[count] == "L")
                 {
-                    for (int t = 0; t < tails.Count(); t++)
+                    for (int i = 0; i < moveCount[count]; i++)
                     {
-                        if (t == 0)
+                        head = (head.Item1, head.Item2 - 1);
+                        MoveHead();
+                        for (int k = 1; k < tails.Count; k++)
                         {
-                            if (movesDir[count] == "L")
-                            {
-                                MoveLeft(head, tails[t], isFirst: true);  //PrintGrid();
-                            }
-                            if (movesDir[count] == "R")
-                            {
-                                MoveRight(head, tails[t], isFirst: true);
-                            }
-                            if (movesDir[count] == "D")
-                            {
-                                MoveDown(head, tails[t], isFirst: true);
-                            }
-                            if (movesDir[count] == "U")
-                            {
-                                MoveUp(head, tails[t], isFirst: true);
-                            }
-                        }
-                        else
-                        {
-                            prevTail = tails[t - 1];
-
-                            var IsLast = (t == tails.Count() - 1) ? true : false;
-
-                            //Console.WriteLine($"Dir: {movesDir[count]}, Count: {moveCount[count]}");
-                            if (movesDir[count] == "L")
-                            {
-                                MoveLeft(tails[t], prevTail, false, isLast: IsLast);
-                            }
-                            if (movesDir[count] == "R")
-                            {
-                                MoveRight(tails[t], prevTail, false, isLast: IsLast);
-                            }
-                            if (movesDir[count] == "D")
-                            {
-                                MoveDown(tails[t], prevTail, false, isLast: IsLast);
-                            }
-                            if (movesDir[count] == "U")
-                            {
-                                MoveUp(tails[t], prevTail, false, isLast: IsLast);
-                            }
+                            MoveTails(k);
                         }
                     }
                 }
-            }
-            //PrintTable();
-
-            Console.WriteLine($"Total Moves: {moves.Count() + 1}");
-        }
-        private void MoveLeft((int, int) head, (int, int) tail, bool isFirst = false, bool isLast = false)
-        {
-            var headPrev = head;
-            if (isFirst)
+                if (movesDir[count] == "R")
                 {
-
-               
-                    head = (head.Item1, head.Item2 - 1);
-            }
-
-                if (Math.Abs(tail.Item2 - head.Item2) > 1 || Math.Abs(tail.Item1 - head.Item1) > 1)
-                {
-                    tail = headPrev;
-                    if(isLast)
-                        moves.Add((tail.Item1, tail.Item2));
+                    for (int i = 0; i < moveCount[count]; i++)
+                    {
+                        head = (head.Item1, head.Item2 + 1);
+                        MoveHead();
+                        for (int k = 1; k < tails.Count; k++)
+                        {
+                            MoveTails(k);
+                        }
+                    }
+                    
                 }
-            
-
-        }
-        private void MoveRight((int, int) head, (int, int) tail, bool isFirst, bool isLast = false)
-        {
-            
-
-                var headPrev = head;
-            if(isFirst)
-            {
-                head = (head.Item1, head.Item2 + 1);
-
+                if (movesDir[count] == "D")
+                {
+                    for (int i = 0; i < moveCount[count]; i++)
+                    {
+                        head = (head.Item1 + 1, head.Item2);
+                        MoveHead();
+                        for (int k = 1; k < tails.Count; k++)
+                        {
+                            MoveTails(k);
+                        }
+                    }
+                }
+                if (movesDir[count] == "U")
+                {
+                    for(int i = 0; i < moveCount[count]; i++)
+                    {
+                        head = (head.Item1 - 1, head.Item2);
+                        MoveHead();
+                        for (int k = 1; k < tails.Count; k++)
+                        {
+                            MoveTails(k);
+                        }
+                    } 
+                }
+                PrintMultipleKnots();
             }
 
-                if (Math.Abs(tail.Item2 - head.Item2) > 1 || Math.Abs(tail.Item1 - head.Item1) > 1)
-                {
-                    tail = headPrev;
-                    if(isLast)
-                        moves.Add((tail.Item1, tail.Item2));
-                }
-
-                //PrintGrid();
-            
-
+            Console.WriteLine($"Total Moves (multiple knots): {moves.Count() + 1}");
+            Console.ReadLine();
         }
 
-        private void MoveDown((int, int) head, (int, int) tail, bool isFirst, bool isLast = false)
+        private void MoveHead()
         {
-            
+            // row                                          // column
+            if (Math.Abs(head.Item2 - tails[0].Item2) < 2 && Math.Abs(head.Item1 - tails[0].Item1) < 2) return;
 
-                var headPrev = head;
-            if(isFirst)
-            {
-                head = (head.Item1 + 1, head.Item2);
+            if (head.Item2 > tails[0].Item2)
+                tails[0] = (tails[0].Item1, tails[0].Item2 + 1);
+            if (head.Item2 < tails[0].Item2)
+                tails[0] = (tails[0].Item1, tails[0].Item2 - 1);
 
-            }
-
-                if (Math.Abs(tail.Item1 - head.Item1) > 1 || Math.Abs(tail.Item2 - head.Item2) > 1)
-                {
-                    tail = headPrev;
-                    if(isLast)
-                        moves.Add((tail.Item1, tail.Item2));
-                }
-
-                //PrintGrid();
-            
-
+            if (head.Item1 > tails[0].Item1)
+                tails[0] = (tails[0].Item1 + 1, tails[0].Item2);
+            if (head.Item1 < tails[0].Item1)
+                tails[0] = (tails[0].Item1 - 1, tails[0].Item2);
         }
-        private void MoveUp((int, int) head, (int, int) tail, bool isFirst, bool isLast = false)
+
+        private void MoveTails(int k)
         {
-           
-
-                var headPrev = head;
-            if(isFirst)
-            {
-                head = (head.Item1 - 1, head.Item2);
-
-            }
-
-                if (Math.Abs(tail.Item1 - head.Item1) > 1 || Math.Abs(tail.Item2 - head.Item2) > 1)
-                {
-                    tail = headPrev;
-                    if(isLast)
-                        moves.Add((tail.Item1, tail.Item2));
-                }
-
-                //PrintGrid();
+            // row                                          // column
+            if (Math.Abs(tails[k-1].Item2 - tails[k].Item2) < 2 && Math.Abs(tails[k-1].Item1 - tails[k].Item1) < 2) return;
             
+            if(tails[k-1].Item2 > tails[k].Item2)
+                tails[k] = (tails[k].Item1, tails[k].Item2+1);
+            if(tails[k-1].Item2 < tails[k].Item2)
+                tails[k] = (tails[k].Item1, tails[k].Item2-1);
 
+            if(tails[k-1].Item1 > tails[k].Item1)
+                tails[k] = (tails[k].Item1+1, tails[k].Item2);
+            if (tails[k-1].Item1 < tails[k].Item1)
+                tails[k] = (tails[k].Item1-1, tails[k].Item2);
+
+
+            if(k == 8)
+                moves.Add((tails[k].Item1, tails[k].Item2));
         }
-        private void PrintGrid()
+        private void PrintKnot()
         {
-            for (int i = 0; i < 150; i++)
+            for (int i = 0; i < 50; i++)
             {
-                for(int j = 0; j < 150; j++)
+                for(int j = 0; j < 50; j++)
                 {
                     if(head == (i, j) && tail == (i, j))
                     {
@@ -291,22 +218,35 @@ namespace AdventOfCode2022
             Console.WriteLine();
         }
 
-        private void PrintTable()
+
+        private void PrintMultipleKnots()
         {
-            for (int i = 0; i < 150; i++)
+            tails.ForEach(t => Console.Write($" {t} "));
+            Console.WriteLine();
+            for (int i = 0; i < 50; i++)
             {
-                for (int j = 0; j < 150; j++)
+                for (int j = 0; j < 50; j++)
                 {
-                    Console.Write($" {grid[i, j]} ");
+                    var toWrite = " . ";
+                    for(int k = tails.Count()-1; k >= 0; k--)
+                    {
+                        if (tails[k] == (i, j))
+                            toWrite = $" {k + 1} ";
+                    }
+                    if (head == (i, j))
+                    {
+                        toWrite = " H ";
+                    }
+                    Console.Write(toWrite);
                 }
                 Console.WriteLine();
             }
+            Console.WriteLine();
         }
 
         protected override void ParseInput(string fileName)
         {
             base.ParseInput(fileName);
-            grid = new char[100, 100];
             movesDir = new List<string>();
             moveCount = new List<int>();
             foreach (var line in input)
