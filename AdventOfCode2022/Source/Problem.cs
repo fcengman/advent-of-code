@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AdventOfCode2022
 {
-    internal class Problem
+    internal abstract class Problem
     {
         protected List<string> input;
 
@@ -16,21 +16,15 @@ namespace AdventOfCode2022
             input = new List<string>();
         }
 
-        public void Run(string filePath)
+        public virtual void Run(string filePath)
         {
             ParseInput(filePath);
-            Part1();
+            //Part1();
             Part2();
         }
 
-        protected virtual void Part1()
-        {
-
-        }
-        protected virtual void Part2()
-        {
-
-        }
+        protected abstract void Part1();
+        protected abstract void Part2();
 
         protected virtual void ParseInput(string filePath)
         {
@@ -39,7 +33,7 @@ namespace AdventOfCode2022
 
         public bool TestDay()
         {
-            Debug.WriteLine("Hello from Day 9");
+            Debug.WriteLine($"Hello from {this.GetType()}");
             return true;
         }
     }

@@ -7,7 +7,7 @@ namespace AdventOfCode2022
         {
             var problem = new Day9();
             if(problem.TestDay())
-                problem.Run(@"..\..\..\Input\Day9\test.txt");
+                problem.Run(@"..\..\..\Input\Day9\test2.txt");
 
 
         }
