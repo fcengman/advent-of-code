@@ -19,8 +19,9 @@ namespace AdventOfCode2022
         public virtual void Run(string filePath)
         {
             ParseInput(filePath);
-            //Part1();
+            Part1();
             Part2();
+            Console.ReadLine();
         }
 
         protected abstract void Part1();
