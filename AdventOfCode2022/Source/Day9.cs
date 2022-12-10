@@ -11,15 +11,30 @@ namespace AdventOfCode2022
     public class Rope
     {
         public (int, int) Head;
-        public List<(int, int)> Knots;
+        public (int, int)[] Knots;
+        public int tailPos;
 
         public Rope(int size)
         {
             Head = (0, 0);
-            Knots = new List<(int, int)>();
+            Knots = new (int, int)[size];
             for(int i = 0; i < size; i++)
             {
-                Knots.Add((0, 0));
+                Knots[i] = (0, 0);
+            }
+            tailPos = size - 1;
+        }
+
+        public void RunInput(List<(string, int)> moves, HashSet<(int, int)> tailMoves)
+        {
+            for (int count = 0; count < moves.Count(); count++)
+            {
+                for (int move = 0; move < moves[count].Item2; move++)
+                {
+                    MoveHead(moves[count].Item1);
+                    MoveKnots();
+                    tailMoves.Add(Knots[tailPos]);
+                }
             }
         }
 
@@ -42,28 +57,30 @@ namespace AdventOfCode2022
             }
         }
 
-        //public void MoveKnots()
-        //{
-        //    if (Math.Abs(Head.Item2 - Knots[0].Item2) > 1 || Math.Abs(Head.Item1 - Knots[0].Item1) > 1)
-        //    {
-        //        if (head.Item2 > tails[0].Item2)
-        //            tails[0] = (tails[0].Item1, tails[0].Item2 + 1);
-        //        if (head.Item2 < tails[0].Item2)
-        //            tails[0] = (tails[0].Item1, tails[0].Item2 - 1);
+        public void MoveKnots()
+        {
+            CatchUp(ref Head, ref Knots[0]);
+            
+            for (int i = 1; i < Knots.Length; i++)
+                CatchUp(ref Knots[i - 1], ref Knots[i]);
+            
+        }
 
-        //        if (head.Item1 > tails[0].Item1)
-        //            tails[0] = (tails[0].Item1 + 1, tails[0].Item2);
-        //        if (head.Item1 < tails[0].Item1)
-        //            tails[0] = (tails[0].Item1 - 1, tails[0].Item2);
-        //    }
-        //    for (int i = 1; i < Knots.Count; i++)
-        //    {
-
-        //    }
-        //}
+        private void CatchUp(ref (int, int) head, ref (int, int) tail)
+        {
+            if (Math.Abs(head.Item2 - tail.Item2) < 2 &&
+                    Math.Abs(head.Item1 - tail.Item1) < 2) return;
+            
+            // Left - Right
+            if (head.Item2 != tail.Item2) 
+                tail.Item2 += Math.Sign(head.Item2 - tail.Item2);
+            
+            // Up - Down
+            if (head.Item1 != tail.Item1) 
+                tail.Item1 += Math.Sign(head.Item1 - tail.Item1);
+        }
 
     }
-
 
     internal class Day9 : Problem
     {
@@ -72,126 +89,23 @@ namespace AdventOfCode2022
         protected override void Part1()
         {
             var rope = new Rope(1);
-            var tailPos = 1;
             HashSet<(int, int)> tailMoves = new HashSet<(int, int)>();
-            for (int count = 0; count < moves.Count(); count++)
-            {
-                for(int move = 0; 0 < moves[count].Item2; move++)
-                {
-                    rope.MoveHead(moves[count].Item1);
-                    //rope.MoveKnots();
-                    tailMoves.Add(rope.Knots[tailPos]);
-                }
-            }
-            Console.WriteLine($"Total Moves (one knot): {moves.Count() + 1}");
+            rope.RunInput(moves, tailMoves);
+            Console.WriteLine($"Total Moves ({rope.Knots.Length} knot): {tailMoves.Count()}");
+            Console.ReadLine();
         }
 
         protected override void Part2()
         {
-            //head = (25,25);
-            //tails = new List<(int, int)>() { (25, 25), (25, 25), (25, 25), (25, 25), (25, 25), (25, 25), (25, 25), (25, 25), (25, 25) };
-
-            //moves = new HashSet<(int, int)>();
-
-            //for (int count = 0; count < movesDir.Count(); count++)
-            //{
-            //    if (movesDir[count] == "L")
-            //    {
-            //        for (int i = 0; i < moveCount[count]; i++)
-            //        {
-            //            head = (head.Item1, head.Item2 - 1);
-            //            MoveHead();
-            //            for (int k = 1; k < tails.Count; k++)
-            //            {
-            //                MoveTails(k);
-            //            }
-            //        }
-            //    }
-            //    if (movesDir[count] == "R")
-            //    {
-            //        for (int i = 0; i < moveCount[count]; i++)
-            //        {
-            //            head = (head.Item1, head.Item2 + 1);
-            //            MoveHead();
-            //            for (int k = 1; k < tails.Count; k++)
-            //            {
-            //                MoveTails(k);
-            //            }
-            //        }
-                    
-            //    }
-            //    if (movesDir[count] == "D")
-            //    {
-            //        for (int i = 0; i < moveCount[count]; i++)
-            //        {
-            //            head = (head.Item1 + 1, head.Item2);
-            //            MoveHead();
-            //            for (int k = 1; k < tails.Count; k++)
-            //            {
-            //                MoveTails(k);
-            //            }
-            //        }
-            //    }
-            //    if (movesDir[count] == "U")
-            //    {
-            //        for(int i = 0; i < moveCount[count]; i++)
-            //        {
-            //            head = (head.Item1 - 1, head.Item2);
-            //            MoveHead();
-            //            for (int k = 1; k < tails.Count; k++)
-            //            {
-            //                MoveTails(k);
-            //            }
-            //        } 
-            //    }
-            //    PrintMultipleKnots();
-            //}
-
-            //Console.WriteLine($"Total Moves (multiple knots): {moves.Count() + 1}");
-            //Console.ReadLine();
+            var rope = new Rope(9);
+            HashSet<(int, int)> tailMoves = new HashSet<(int, int)>();
+            rope.RunInput(moves, tailMoves);
+            Console.WriteLine($"Total Moves ({rope.Knots.Length} knot): {tailMoves.Count()}");
         }
 
-        //private void MoveHead()
-        //{
-        //    // row                                          // column
-        //    if (Math.Abs(head.Item2 - tails[0].Item2) < 2 && Math.Abs(head.Item1 - tails[0].Item1) < 2) return;
-
-        //    if (head.Item2 > tails[0].Item2)
-        //        tails[0] = (tails[0].Item1, tails[0].Item2 + 1);
-        //    if (head.Item2 < tails[0].Item2)
-        //        tails[0] = (tails[0].Item1, tails[0].Item2 - 1);
-
-        //    if (head.Item1 > tails[0].Item1)
-        //        tails[0] = (tails[0].Item1 + 1, tails[0].Item2);
-        //    if (head.Item1 < tails[0].Item1)
-        //        tails[0] = (tails[0].Item1 - 1, tails[0].Item2);
-        //}
-
-        //private void MoveTails(int k)
-        //{
-        //    // row                                          // column
-        //    if (Math.Abs(tails[k-1].Item2 - tails[k].Item2) < 2 && Math.Abs(tails[k-1].Item1 - tails[k].Item1) < 2) return;
-            
-        //    if(tails[k-1].Item2 > tails[k].Item2)
-        //        tails[k] = (tails[k].Item1, tails[k].Item2+1);
-        //    if(tails[k-1].Item2 < tails[k].Item2)
-        //        tails[k] = (tails[k].Item1, tails[k].Item2-1);
-
-        //    if(tails[k-1].Item1 > tails[k].Item1)
-        //        tails[k] = (tails[k].Item1+1, tails[k].Item2);
-        //    if (tails[k-1].Item1 < tails[k].Item1)
-        //        tails[k] = (tails[k].Item1-1, tails[k].Item2);
-
-
-        //    if(k == 8)
-        //        moves.Add((tails[k].Item1, tails[k].Item2));
-        //}
-        
-
-
-        private void PrintMultipleKnots(Rope rope, int size)
+        private void PrintKnots(Rope rope, int size)
         {
-            rope.Knots.ForEach(t => Console.Write($" {t} "));
+            rope.Knots.ToList().ForEach(t => Console.Write($" {t} "));
             Console.WriteLine();
             for (int i = -size/2; i < size/2; i++)
             {
