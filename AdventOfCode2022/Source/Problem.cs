@@ -10,6 +10,7 @@ namespace AdventOfCode2022
     internal abstract class Problem
     {
         protected List<string> input;
+        protected string path;
 
         public Problem()
         {
@@ -18,6 +19,7 @@ namespace AdventOfCode2022
 
         public virtual void Run(string filePath)
         {
+            path = filePath; 
             ParseInput(filePath);
             Part1();
             Part2();

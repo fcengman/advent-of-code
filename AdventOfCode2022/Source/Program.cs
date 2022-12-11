@@ -5,9 +5,9 @@ namespace AdventOfCode2022
     {
         public static void Main(string[] args)
         {
-            var problem = new Day9();
+            var problem = new Day11();
             if(problem.TestDay())
-                problem.Run(@"..\..\..\Input\Day9\Day9.txt");
+                problem.Run(@"..\..\..\Input\Day11\Day11.txt");
 
 
         }

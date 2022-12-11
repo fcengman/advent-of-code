@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+
 
 namespace AdventOfCode2022
 {
@@ -34,11 +29,12 @@ namespace AdventOfCode2022
                     MoveHead(moves[count].Item1);
                     MoveKnots();
                     tailMoves.Add(Knots[tailPos]);
+      
                 }
             }
         }
 
-        public void MoveHead(string dir)
+        private void MoveHead(string dir)
         {
             switch(dir[0])
             {
@@ -57,7 +53,7 @@ namespace AdventOfCode2022
             }
         }
 
-        public void MoveKnots()
+        private void MoveKnots()
         {
             CatchUp(ref Head, ref Knots[0]);
             
