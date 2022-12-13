@@ -10,7 +10,7 @@ namespace SetupProblem
     {
         public static void Main(string[] args)
         {
-            CreateDay.SetupProblem("Day11");
+            CreateDay.SetupProblem("Day12");
 
         }
     }
