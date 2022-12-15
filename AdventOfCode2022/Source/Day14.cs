@@ -118,19 +118,21 @@ namespace AdventOfCode2022
             }
             for (int i = 0; i < columns.Count(); i++)
             {
-                var currentColumn = columns[i];
-                var currentRow = rows[i];
                 for(int j = 1; j < columns[i].Count(); j++)
                 {
-                    var rowDiff = currentRow[j] - currentRow[j - 1];
-                    var columnDiff = currentColumn[j] -currentColumn[j - 1];
+                    var rowValue = rows[i][j];
+                    var prevRowValue = rows[i][j-1];
+                    var colValue = columns[i][j];
+                    var prevColValue = columns[i][j-1];
+                    var rowDiff = rowValue - prevRowValue;
+                    var columnDiff = colValue -prevColValue;
                     if(rowDiff != 0)
                     {
                         if(rowDiff > 0)
                         {
                             for(int s = rowDiff; s >= 0; s--)
                             {
-                                grid[currentColumn[j], currentRow[j] - s] = '#';
+                                grid[colValue, rowValue- s] = '#';
                             }
                             //PrintGrid();
                         }
@@ -138,7 +140,7 @@ namespace AdventOfCode2022
                         {
                             for (int s = rowDiff; s <= 0; s++)
                             {
-                                grid[currentColumn[j - 1], currentRow[j] + s] = '#';
+                                grid[prevColValue, rowValue + s] = '#';
                             }
                             //PrintGrid();
                         }
@@ -149,7 +151,7 @@ namespace AdventOfCode2022
                         {
                             for (int s = columnDiff; s >= 0; s--)
                             {
-                                grid[currentColumn[j] - s, currentRow[j]] = '#';
+                                grid[colValue - s, rowValue] = '#';
                             }
                             PrintGrid();
                         }
@@ -157,7 +159,7 @@ namespace AdventOfCode2022
                         {
                             for (int s = columnDiff; s <= 0; s++)
                             {
-                                grid[s + currentColumn[j - 1], currentRow[j]] = '#';
+                                grid[s + prevColValue, rowValue] = '#';
                             }
                             //PrintGrid();
                         }
